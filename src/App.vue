@@ -73,7 +73,6 @@ const selectedServices = ref<ServiceItem[]>([])
 const selectedServiceId = ref<number | string>('')
 const quantity = ref<number>(1)
 
-
 const totalPrice = computed(() => {
   return selectedServices.value.reduce((sum, item) => sum + item.service.price * item.quantity, 0)
 })
