@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 interface Service {
   id: number
@@ -69,30 +69,30 @@ const availableServices: Service[] = [
   { id: 4, name: 'SEO-оптимизация', price: 20000 },
 ]
 
-let selectedServices: ServiceItem[] = []
-let selectedServiceId: number | string = ''
+const selectedServices = ref<ServiceItem[]>([])
+const selectedServiceId = ref<number | string>('')
 let quantity: number = 1
 
 const totalPrice = computed(() => {
-  return selectedServices.reduce((sum, item) => sum + item.service.price * item.quantity, 0)
+  return selectedServices.value.reduce((sum, item) => sum + item.service.price * item.quantity, 0)
 })
 
 function addService() {
-  const service = availableServices.find(s => s.id === selectedServiceId)
+  const service = availableServices.find(s => s.id === Number(selectedServiceId.value))
   if (!service) return
 
-  const existing = selectedServices.find(item => item.service === service)
+  const existing = selectedServices.value.find(item => item.service.id === service.id)
   if (existing) {
-    existing.quantity += quantity
+    existing.quantity++
   } else {
-    selectedServices.push({ service, quantity })
+    selectedServices.value.push({ service, quantity })
   }
 }
 
 function removeService(item: ServiceItem) {
-  const index = selectedServices.indexOf(item)
+  const index = selectedServices.value.indexOf(item)
   if (index > -1) {
-    selectedServices.splice(index, 1)
+    selectedServices.value.splice(index, 1)
   }
 }
 </script>
