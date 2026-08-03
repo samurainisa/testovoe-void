@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 interface Service {
   id: number
@@ -71,7 +71,8 @@ const availableServices: Service[] = [
 
 const selectedServices = ref<ServiceItem[]>([])
 const selectedServiceId = ref<number | string>('')
-let quantity: number = 1 //<- нет нужды делать реактивной, переменная общая для всего приложения и мы ее явно прибавляем
+const quantity = ref<number>(1)
+
 
 const totalPrice = computed(() => {
   return selectedServices.value.reduce((sum, item) => sum + item.service.price * item.quantity, 0)
@@ -83,9 +84,9 @@ function addService() {
 
   const existing = selectedServices.value.find(item => item.service.id === service.id)
   if (existing) {
-    existing.quantity += quantity
+    existing.quantity += quantity.value
   } else {
-    selectedServices.value.push({ service, quantity })
+    selectedServices.value.push({ service, quantity: quantity.value })
   }
 }
 
@@ -95,6 +96,15 @@ function removeService(item: ServiceItem) {
     selectedServices.value.splice(index, 1)
   }
 }
+
+
+watch(quantity, (newVal: number) => {
+  if (newVal > 10) {
+    quantity.value = 10
+  } else if (newVal < 1) {
+    quantity.value = 1
+  }
+})
 </script>
 
 <style scoped>
