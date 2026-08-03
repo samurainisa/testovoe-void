@@ -22,7 +22,7 @@
           <th>Цена за ед.</th>
           <th>Кол-во</th>
           <th>Сумма</th>
-          <th></th>
+          <th>Действие</th>
         </tr>
       </thead>
       <tbody>
@@ -71,7 +71,7 @@ const availableServices: Service[] = [
 
 const selectedServices = ref<ServiceItem[]>([])
 const selectedServiceId = ref<number | string>('')
-let quantity: number = 1
+let quantity: number = 1 //<- нет нужды делать реактивной, переменная общая для всего приложения и мы ее явно прибавляем
 
 const totalPrice = computed(() => {
   return selectedServices.value.reduce((sum, item) => sum + item.service.price * item.quantity, 0)
@@ -83,7 +83,7 @@ function addService() {
 
   const existing = selectedServices.value.find(item => item.service.id === service.id)
   if (existing) {
-    existing.quantity++
+    existing.quantity += quantity
   } else {
     selectedServices.value.push({ service, quantity })
   }
